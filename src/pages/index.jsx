@@ -51,17 +51,13 @@ const handleSubmit = async(e) => {
 const handleAuthError = (error) => {
   switch (error.code) {
     case "auth/email-already-in-use":
-      setErrorMessage(
-        "Email is already in use. Please choose another email."
-      );
+      setErrorMessage("Email is already in use. Please choose another email.");
       break;
     case "auth/invalid-email":
       setErrorMessage("Invalid email address.");
       break;
     case "auth/weak-password":
-      setErrorMessage(
-        "Password is too weak. Please choose a stronger password."
-      );
+      setErrorMessage("Password is too weak. Please choose a stronger password.");
       break;
     case "auth/invalid-credential":
     case "auth/user-not-found":
@@ -69,9 +65,7 @@ const handleAuthError = (error) => {
       setErrorMessage("Invalid email or password.");
       break;
     default:
-      setErrorMessage(
-        "An error occurred during authentication. Please try again later."
-      );
+      setErrorMessage("An error occurred during authentication. Please try again later.");
       break;
   }
 };
@@ -88,7 +82,7 @@ const handleAuthError = (error) => {
           <label htmlFor="password" className="label">Password</label>
           <input type="password" name="password" onChange={handleChange} className="inputField focus:focus" />
           {<div className="text-red-500 mt-2 font-bold">{errorMessage}</div>}
-          <p className="text-center my-2 text-lg">Don't have an account? <Link className="text-blue-600" href={"signup"}>Sign Up</Link></p>
+          <p className="text-center my-2 text-lg">Don&apos;t have an account? <Link className="text-blue-600" href={"signup"}>Sign Up</Link></p>
           <input type="submit" value="Sign In" className="cursor-pointer inputField text-center bg-black text-white "/>
         </form>
     </main>
