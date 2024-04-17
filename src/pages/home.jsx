@@ -73,13 +73,13 @@ const Home = () => {
             }
         })
     }, [router.isReady])
-    
+
     return (<>
         <header className={styles.head}>
             <div>
                 <p className=''>Welcome, {data ? data.name : "..."}</p>
                 <h1> Total Earning : {data ? data.balance : "..."}</h1>
-                <p className=''>Pending Balance : {data ? data.pendingBalance: "..."}</p>
+                <p className=''>Pending Balance : {data ? data.pendingBalance : "..."}</p>
             </div>
             <div>
                 <span onClick={() => router.push("settings")}>
@@ -96,25 +96,25 @@ const Home = () => {
 
                 {/* <PaystackHookExample email={email} /> */}
             </div>
-            
+
             <section className='w-full '>
                 <ul className='flex justify-evenly my-8 mx-auto text-xl  font-bold text-gray-700' style={{ width: "min(350px, 90vw)", }}>
-                    <li onClick={() => setSwitchToRefer(true)} className={ switchToRefer ? "referBorder text-gray-950" : ""}>Refers</li>
-                    <li onClick={() => setSwitchToRefer(false)} className={ !switchToRefer ? "referBorder text-gray-950" : ""}>Tasks</li>
+                    <li onClick={() => setSwitchToRefer(true)} className={switchToRefer ? "referBorder text-gray-950" : ""}>Refers</li>
+                    <li onClick={() => setSwitchToRefer(false)} className={!switchToRefer ? "referBorder text-gray-950" : ""}>Tasks</li>
                 </ul>
             </section>
-            <div className={ switchToRefer ? "" : "hidden" }>
-            <div className={styles.middle}>
-                <h3 className='text-lg text-gray-900 font-bold'> Your referals {data && `(${data.refered.length})`}</h3>
-                {/* <h3> Your referals ({referals}) </h3> */}
-                <div className='flex items-center gap-2'>
-                    <CopyCodeToClipboard code={data ? `${data.code}` : ""}  className="mr-2" />
-                    <ShareButton code={data ? `${data.code}` : ""} />
+            <div className={switchToRefer ? "" : "hidden"}>
+                <div className={styles.middle}>
+                    <h3 className='text-lg text-gray-900 font-bold'> Your referals {data && `(${data.refered.length})`}</h3>
+                    {/* <h3> Your referals ({referals}) </h3> */}
+                    <div className='flex items-center gap-2'>
+                        <CopyCodeToClipboard code={data ? `${data.code}` : ""} className="mr-2" />
+                        <ShareButton code={data ? `${data.code}` : ""} />
+                    </div>
                 </div>
-            </div>
 
                 <section className={styles.referrals}>
-                    
+
                     {data ? data.refered.map(({ name, uid }, index) => {
                         console.log("are u working", name)
                         return (<article key={index}>
@@ -125,7 +125,7 @@ const Home = () => {
                             <div>
                                 <h4 className='font-bold text-lg text-gray-800'>{name}</h4>
                                 <p>#400</p>
-                            </div> 
+                            </div>
                         </article>);
                     })
                         :
@@ -143,10 +143,10 @@ const Home = () => {
                         })()}
                 </section>
             </div>
-            <div className={ !switchToRefer ? "" : "hidden" }>
-            <section>
-                <p className='text-center text-lg text-gray-700 font-bold my-4'>Coming Soon... </p>
-            </section>
+            <div className={!switchToRefer ? "" : "hidden"}>
+                <section>
+                    <p className='text-center text-lg text-gray-700 font-bold my-4'>Coming Soon... </p>
+                </section>
 
             </div>
         </main>
