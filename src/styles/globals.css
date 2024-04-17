@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  .inputField {
+    /* ... */
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: large;
+  }
+
+  .focus {
+    outline-offset: 2px;
+    outline: 2px solid black;
+    color: #000;
+  }
+
+  .label{
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+  .main{
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+    margin-inline: auto;
+    width: min(350px, 90vw);
+  }
+  .main label{
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+  .main input{
+    border: 2px solid black;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: large;
+
+  }
+  .main input:focus{
+    outline-offset: 2px;
+    outline: 2px solid black;
+    color: #000;
+  }
+}
