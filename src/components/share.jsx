@@ -6,7 +6,7 @@ const ShareButton = ( {code}) => {
           await navigator.share({
             title: document.title,
             text: 'Refer your friends and Earm more money',
-            url: `pyscheme.netlify.app/signup?r=${code}`
+            url: `https://www.pyscheme.netlify.app/signup?r=${code}`
           });
           console.log('Link shared successfully');
         } catch (error) {
