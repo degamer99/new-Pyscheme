@@ -81,8 +81,8 @@ const handleAuthError = (error) => {
           <input type="email" name="email" onChange={handleChange} className="mb-3 inputField focus:focus" />
           <label htmlFor="password" className="label">Password</label>
           <input type="password" name="password" onChange={handleChange} className="inputField focus:focus" />
-          {<div className="text-red-500 mt-2 font-bold">{errorMessage}</div>}
-          <p className="text-center my-2 text-lg">Don&apos;t have an account? <Link className="text-blue-600" href={"signup"}>Sign Up</Link></p>
+          {<div className="text-red-500 my-1 font-bold">{errorMessage}</div>}
+          <p className="text-center my-2 text-lg font-semibold">Don&apos;t have an account? <Link className="text-blue-600" href={"signup"}>Sign Up</Link></p>
           <input type="submit" value="Sign In" className="cursor-pointer inputField text-center bg-black text-white "/>
         </form>
     </main>

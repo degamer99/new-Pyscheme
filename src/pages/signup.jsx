@@ -1,8 +1,8 @@
 import Link from 'next/link'
 import { FaSignal } from 'react-icons/fa'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { doc, setDoc, collection, where, getDocs, query, updateDoc, arrayUnion} from "firebase/firestore";
+import { doc, setDoc, collection, where, getDocs, query, updateDoc, arrayUnion } from "firebase/firestore";
 import { auth, firestore } from '@/components/firebase';
 import { useRouter } from 'next/router';
 
@@ -10,13 +10,19 @@ const Signup = () => {
     const router = useRouter();
     const [errorMessage, setErrorMessage] = useState("");
     const [userUid, setUserUid] = useState("");
+    const { r } = router.query;
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        code: '',
+        code: r,
         name: '',
         // Add more form fields as needed
     });
+    useEffect(() => {
+    if(!router.isReady) return;
+        setFormData(prevState => ({ ...prevState, code: r }));
+
+    }, [r, router.isReady])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -48,11 +54,13 @@ const Signup = () => {
                     refered: [],
                     numberOfRefered: 0,
                     date: Date.now(),
-                    balance: 0
+                    pendingBalance: 0,
+                    balance: 0,
+                    paid: false
                 });
             //   
 
-            await handleRefer(formData.code, user.uid)
+            await handleRefer(formData.code, formData.name, user.uid)
                 .then(() => router.push("/home"));
             console.log("User signed up:", user);
         } catch (error) {
@@ -91,7 +99,7 @@ const Signup = () => {
         }
     };
 
-    const handleRefer = async(code, uid) => {
+    const handleRefer = async (code, name, uid) => {
         console.log(code, uid)
         const findCollectionByReferralCode = async (code) => {
             try {
@@ -111,7 +119,7 @@ const Signup = () => {
         };
         findCollectionByReferralCode(code)
             .then((results) => {
-                updateRef(results[0].id, uid);
+                updateRef(results[0].id, uid, name, pendingBalance, 400);
                 console.log('Query results:', results[0].id);
             })
             .catch((error) => {
@@ -119,9 +127,9 @@ const Signup = () => {
             });
 
     }
-    const updateRef = async (userID, refID) => {
+    const updateRef = async (userID, refID, name) => {
         await updateDoc(doc(firestore, "users", userID), {
-            refered: arrayUnion(refID)
+            refered: arrayUnion({ uid: refID, name })
         }).then(() => console.log("ref updated"))
     }
 

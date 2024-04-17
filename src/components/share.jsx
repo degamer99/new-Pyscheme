@@ -1,12 +1,12 @@
 import { MdShare } from "react-icons/md";
-const ShareButton = () => {
+const ShareButton = ( {code}) => {
     const handleShare = async () => {
       if (navigator.share) {
         try {
           await navigator.share({
             title: document.title,
-            text: 'Check out this link!',
-            url: window.location.href
+            text: 'Refer your friends and Earm more money',
+            url: `pyscheme.netlify.app/signup?r=${code}`
           });
           console.log('Link shared successfully');
         } catch (error) {

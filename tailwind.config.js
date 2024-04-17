@@ -15,6 +15,9 @@ module.exports = {
       , boxShadow: {
         'outline-glow': '0 0 10px 3px #ccc',
       },
+      border: {
+        "bottom": "2px solid black"
+      },
     },
   },
   plugins: [],
