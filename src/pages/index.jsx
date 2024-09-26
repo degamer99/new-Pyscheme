@@ -1,91 +1,129 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import { FaSignal } from 'react-icons/fa'
-import Link from "next/link";
-import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, firestore } from "@/components/firebase";
-import { useRouter } from "next/router";
+import styles from '../styles/home.module.sass'
+import { FlutterWaveButton, closePaymentModal } from "flutterwave-react-v3";
+import { FaCog, FaGift, FaHome, FaRegEye, FaRegEyeSlash, FaRegMoneyBillAlt } from "react-icons/fa";
+import { VscSettingsGear, VscHome } from "react-icons/vsc";
+import { MdShare, MdOutlineDashboard } from "react-icons/md";
+import { useRef, useState, useEffect, useContext } from 'react';
+import Menu from "../components/menu"
+import { useRouter } from 'next/router';
+import ShareButton from "../components/share"
+import { useUser, UserContext } from '@/components/AuthContext';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, firestore } from '@/components/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import CopyCodeToClipboard from '@/components/copy';
 
-const inter = Inter({ subsets: ["latin"] });
+;
 
+const Home = () => {
+  const router = useRouter();
+  const [data, setData] = useState()
+  const [switchToRefer, setSwitchToRefer] = useState(true)
+  // console.log("data outside useEffect",  data)
 
-export default function Home() {
-  const router = useRouter()
-  const [errorMessage, setErrorMessage] = useState("");
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    code: '',
-    name: '',
-    // Add more form fields as needed
-});
+  const saveToLocalStorage = (key, value) => {
+    localStorage.setItem(key, JSON.stringify(value));
+  };
 
-const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-        ...prevState,
-        [name]: value
-    }));
-};
-const handleSubmit = async(e) => {
-  e.preventDefault()
-  try {
-    setErrorMessage("Loading ...");
+  const checkLocalStorage = (key) => {
+    const value = JSON.parse(localStorage.getItem(key));
+    console.log("this is value", value)
+    return value !== null; // Return true if value is present, false otherwise
+  };
+  useEffect(() => {
+    if (!router.isReady) return;
+    onAuthStateChanged(auth, async (user) => {
+      console.log("data inside useEffect", data)
+      if (user) {
+        await getDoc(doc(firestore, "users", user.uid))
+          .then((file) => {
+            console.log("inside useEffect then", file.data())
+            setData(file.data())
+          })
 
-    await signInWithEmailAndPassword(
-      auth,
-      formData.email,
-      formData.password
-    ).then((user) => {
-      console.log("User signed in", user, user.user.uid);
-      router.push("/home")
-    });
-  } catch (error) {
-    handleAuthError(error);
+      } else {
+        console.log("No User Found");
+        router.push("/")
+      }
+    })
+  }, [router.isReady])
 
-    console.error("Error signing in:", error.message);
-  }
-}
-
-const handleAuthError = (error) => {
-  switch (error.code) {
-    case "auth/email-already-in-use":
-      setErrorMessage("Email is already in use. Please choose another email.");
-      break;
-    case "auth/invalid-email":
-      setErrorMessage("Invalid email address.");
-      break;
-    case "auth/weak-password":
-      setErrorMessage("Password is too weak. Please choose a stronger password.");
-      break;
-    case "auth/invalid-credential":
-    case "auth/user-not-found":
-    case "auth/wrong-password":
-      setErrorMessage("Invalid email or password.");
-      break;
-    default:
-      setErrorMessage("An error occurred during authentication. Please try again later.");
-      break;
-  }
-};
-
-  return (<div>
-    <header className="my-10 flex justify-center">
-      <FaSignal size={40} />
-      <h1 className="text-4xl font-bold">Pyscheme</h1>
+  return (<>
+    <header className={styles.head}>
+      <div>
+        <p className=''>Welcome, {data ? data.name : "..."}</p>
+        <h1> Total Earning : {data ? data.balance : "..."}</h1>
+        <p className=''>Pending Balance : {data ? data.pendingBalance : "..."}</p>
+      </div>
+      <div>
+        <span onClick={() => router.push("settings")}>
+          {/* <FaCog /> */}
+          <VscSettingsGear />
+        </span>
+      </div>
     </header>
-    <main>
-        <form className=" mx-auto flex gap-2 flex-col" style={{ width: "min(350px, 90vw)",}} onSubmit={handleSubmit}>
-          <label htmlFor="email" className="label" style={{ alignSelf: "left" }}>Email Address</label>
-          <input type="email" name="email" onChange={handleChange} className="mb-3 inputField focus:focus" />
-          <label htmlFor="password" className="label">Password</label>
-          <input type="password" name="password" onChange={handleChange} className="inputField focus:focus" />
-          {<div className="text-red-500 my-1 font-bold">{errorMessage}</div>}
-          <p className="text-center my-2 text-lg font-semibold">Don&apos;t have an account? <Link className="text-blue-600" href={"signup"}>Sign Up</Link></p>
-          <input type="submit" value="Sign In" className="cursor-pointer inputField text-center bg-black text-white "/>
-        </form>
+    <main className={styles.main}>
+      <div className={styles.member}>
+        <h3>Become a Member</h3>
+        <p>Enjoy cool benefits, cash prizes and rewards, perform tasks and activities, earn cash through your referral link when someone registers.</p>
+
+        {/* <PaystackHookExample email={email} /> */}
+      </div>
+
+      <section className='w-full '>
+        <ul className='flex justify-evenly my-8 mx-auto text-xl  font-bold text-gray-700' style={{ width: "min(350px, 90vw)", }}>
+          <li onClick={() => setSwitchToRefer(true)} className={switchToRefer ? "referBorder text-gray-950" : ""}>Refers</li>
+          <li onClick={() => setSwitchToRefer(false)} className={!switchToRefer ? "referBorder text-gray-950" : ""}>Tasks</li>
+        </ul>
+      </section>
+      <div className={switchToRefer ? "" : "hidden"}>
+        <div className={styles.middle}>
+          <h3 className='text-lg text-gray-900 font-bold'> Your referals {data && `(${data.refered.length})`}</h3>
+          {/* <h3> Your referals ({referals}) </h3> */}
+          <div className='flex items-center gap-2'>
+            <CopyCodeToClipboard code={data ? `${data.code}` : ""} className="mr-2" />
+            <ShareButton code={data ? `${data.code}` : ""} />
+          </div>
+        </div>
+
+        <section className={styles.referrals}>
+
+          {data ? data.refered.map(({ name, uid }, index) => {
+            console.log("are u working", name)
+            return (<article key={index}>
+              <div>
+                <h4 className='font-bold text-lg text-gray-800'>Name</h4>
+                <p>Total reward</p>
+              </div>
+              <div>
+                <h4 className='font-bold text-lg text-gray-800'>{name}</h4>
+                <p>#400</p>
+              </div>
+            </article>);
+          })
+            :
+            (() => {
+              return (<article>
+                <div>
+                  <h4></h4>
+                  <p></p>
+                </div>
+                <div>
+                  <h4></h4>
+                  <p></p>
+                </div>
+              </article>)
+            })()}
+        </section>
+      </div>
+      <div className={!switchToRefer ? "" : "hidden"}>
+        <section>
+          <p className='text-center text-lg text-gray-700 font-bold my-4'>Coming Soon... </p>
+        </section>
+
+      </div>
     </main>
-  </div>
-  )
+    <Menu />
+  </>)
 }
+export default Home;
